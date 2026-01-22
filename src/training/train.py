@@ -99,6 +99,9 @@ def train():
         "confusion_matrix": confusion_matrix(y_test, y_pred_xgb).tolist()
     }
     
+    if not os.path.exists("reports"):
+        os.makedirs("reports")
+
     with open("reports/metrics.json", "w") as f:
         json.dump(metrics, f, indent=4)
         
