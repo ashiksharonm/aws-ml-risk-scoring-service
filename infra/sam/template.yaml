@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS ML Risk Scoring Service - Serverless Deployment
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+
+Resources:
+  RiskScoringFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src.api.main.handler
+      Runtime: python3.11
+      CodeUri: .
+      Description: FastAPI for Credit Risk Scoring
+      Environment:
+        Variables:
+          MODEL_PATH: "models/model.pkl"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref ModelBucket
+
+  ModelBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "risk-scoring-models-${AWS::AccountId}"
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/predict"
