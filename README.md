@@ -24,9 +24,9 @@ A production-grade Machine Learning service for credit risk scoring, deployed on
                                    +-------------------+
                                    |   EC2 Instance    |
                                    |  +-------------+  |
-       EC2 / Docker Mode           |  |    Nginx    |  |
+       EC2 / Docker Mode           |  |    Caddy    |  |
                                    |  +------+------+  |
-                                   |         |         |
+                                   |         | (Reverse Proxy)
                                    |  +------v------+  |
                                    |  |   FastAPI   |  |
                                    |  +-------------+  |
@@ -40,7 +40,7 @@ A production-grade Machine Learning service for credit risk scoring, deployed on
 - **API**: FastAPI with clean Pydantic schemas.
 - **Infrastructure**:
     - **Mode A**: Serverless (AWS SAM + Lambda).
-    - **Mode B**: Dockerized (EC2 + Nginx).
+    - **Mode B**: Dockerized (EC2 + Caddy + HTTPS).
 - **DevOps**: CI/CD with GitHub Actions, Makefile for automation.
 
 ## Local Setup
@@ -72,10 +72,17 @@ Ensure you have `aws-cli` and `sam-cli` installed.
 ### Mode B: EC2 (Docker) - **RECOMMENDED for Free Tier**
 Follow the detailed [Deployment Guide](docs/DEPLOY_GUIDE.md).
 
-Quick Summary:
+**Key Features of this Deployment:**
+- **Zero Cost**: Uses Free Tier `t2.micro` EC2 instance.
+- **HTTPS Enabled**: Uses **Caddy** for automatic SSL termination (Let's Encrypt).
+- **Dynamic DNS**: Integrates with **DuckDNS** for a free custom domain.
+- **Containerized**: Orchestrated via `docker-compose` for stability.
+
+**Quick Summary:**
 1. Launch a `t2.micro` EC2 instance.
 2. Transfer code via `scp`.
-3. Build and run Docker container on the instance.
+3. Set your DuckDNS domain: `export DOMAIN_NAME=yourapp.duckdns.org`
+4. Run `docker-compose up -d` to start the secure stack.
 
 ## Monitoring & Logs
 - **Lambda**: View CloudWatch Logs groups `/aws/lambda/RiskScoringFunction`.
