@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   ml-api:
+    image: ml-api
     build:
       context: .
       dockerfile: docker/Dockerfile
