@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  ml-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ml-api
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      - WORKERS=1
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - ml-api
+
+volumes:
+  caddy_data:
+  caddy_config:

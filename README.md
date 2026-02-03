@@ -69,13 +69,13 @@ Ensure you have `aws-cli` and `sam-cli` installed.
 ./infra/deploy_lambda.sh
 ```
 
-### Mode B: EC2 (Docker)
-1. Launch an EC2 instance (t2.micro).
-2. Edit `infra/deploy_ec2.sh` with your key and IP.
-3. Run:
-   ```bash
-   ./infra/deploy_ec2.sh
-   ```
+### Mode B: EC2 (Docker) - **RECOMMENDED for Free Tier**
+Follow the detailed [Deployment Guide](docs/DEPLOY_GUIDE.md).
+
+Quick Summary:
+1. Launch a `t2.micro` EC2 instance.
+2. Transfer code via `scp`.
+3. Build and run Docker container on the instance.
 
 ## Monitoring & Logs
 - **Lambda**: View CloudWatch Logs groups `/aws/lambda/RiskScoringFunction`.
