@@ -26,6 +26,8 @@ services:
       - caddy_config:/config
     depends_on:
       - ml-api
+    environment:
+      - DOMAIN_NAME
 
 volumes:
   caddy_data:
