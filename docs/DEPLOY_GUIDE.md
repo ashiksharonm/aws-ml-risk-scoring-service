@@ -58,11 +58,21 @@ This guide will help you deploy the **AWS ML Risk Scoring Service** to an AWS EC
     export DOMAIN_NAME=your-app.duckdns.org
     ```
 
+    **Troubleshooting Build Error:**
+    If you see `compose build requires buildx`, install the plugin:
+    ```bash
+    sudo yum install docker-buildx-plugin -y
+    ```
+
 2.  **Start Services**:
     ```bash
     cd /home/ec2-user
-    # Ensure you are in the directory with docker-compose.yml
-    docker-compose up -d --build
+
+    # 1. Build the image manually (Reliable on all EC2 instances)
+    docker build -t ml-api -f docker/Dockerfile .
+
+    # 2. Start services using that image
+    docker-compose up -d --no-build
     ```
 
 3.  **View Logs** (Optional):
