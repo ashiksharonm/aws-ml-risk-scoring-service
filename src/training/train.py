@@ -67,10 +67,13 @@ def train():
         ('preprocessor', preprocessor),
         ('classifier', xgb.XGBClassifier(
             objective='binary:logistic',
-            n_estimators=100,
+            n_estimators=300,
             max_depth=6,
-            learning_rate=0.1,
+            learning_rate=0.05,
             eval_metric='auc',
+            # scale_pos_weight=1, # Revert to 1 to maximize Accuracy (user request)
+            subsample=0.8,
+            colsample_bytree=0.8,
             random_state=42,
             n_jobs=-1
         ))
