@@ -1,6 +1,6 @@
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, PolynomialFeatures
 from sklearn.impute import SimpleImputer
 import pandas as pd
 import numpy as np
@@ -9,7 +9,6 @@ def get_preprocessor(categorical_features: list[str], numerical_features: list[s
     """
     Creates a scikit-learn preprocessing pipeline.
     """
-    
     numerical_pipeline = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())

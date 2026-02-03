@@ -1,7 +1,7 @@
 #!/bin/bash
 # Update and install dependencies
 sudo yum update -y
-sudo yum install -y git docker
+sudo yum install -y git docker docker-buildx-plugin
 
 # Start Docker service
 sudo service docker start
