@@ -4,34 +4,8 @@ A production-grade Machine Learning service for credit risk scoring, deployed on
 
 ## Architecture
 
-```ascii
-                                   +-------------------+
-                                   |   AWS API Gateway |
-                                   +---------+---------+
-                                             |
-                                   +---------v---------+
-                                   |    AWS Lambda     |
-                                   | (FastAPI + Mangum)|
-       Serverless Mode             +---------+---------+
-                                             |
-                                   +---------v---------+
-                                   |      S3 Bucket    |
-                                   |   (Model & Data)  |
-                                   +-------------------+
+<img width="1662" height="508" alt="image" src="https://github.com/user-attachments/assets/81faf79e-027f-4af0-b65d-1d8851a971a4" />
 
-       -----------------------------------------------------
-
-                                   +-------------------+
-                                   |   EC2 Instance    |
-                                   |  +-------------+  |
-       EC2 / Docker Mode           |  |    Caddy    |  |
-                                   |  +------+------+  |
-                                   |         | (Reverse Proxy)
-                                   |  +------v------+  |
-                                   |  |   FastAPI   |  |
-                                   |  +-------------+  |
-                                   +-------------------+
-```
 
 ## Features
 
