@@ -1,4 +1,4 @@
-# AWS ML Risk Scoring Service
+# AWS Financial Risk Prediction Engine
 
 A production-grade Machine Learning service for credit risk scoring, deployed on AWS Free Tier.
 
