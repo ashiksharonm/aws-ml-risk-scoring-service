@@ -9,13 +9,24 @@ A production-grade Machine Learning service for credit risk scoring, deployed on
 
 ## Features
 
-- **Model**: XGBoost Classifier with SHAP explainability.
+- **Model**: XGBoost classifier. `/predict` returns the top-5 per-feature contributions (log-odds) computed with XGBoost's native TreeSHAP (`pred_contribs=True`).
 - **Dataset**: UCI Credit Default (Processed with Scikit-learn).
 - **API**: FastAPI with clean Pydantic schemas.
 - **Infrastructure**:
     - **Mode A**: Serverless (AWS SAM + Lambda).
     - **Mode B**: Dockerized (EC2 + Caddy + HTTPS).
 - **DevOps**: CI/CD with GitHub Actions, Makefile for automation.
+
+## Model Performance
+
+Reproduced by running `make train` (UCI Default of Credit Card Clients, 30,000 rows, 80/20 stratified split, seed 42):
+
+| Model | ROC-AUC | Accuracy | Precision | Recall |
+|-------|---------|----------|-----------|--------|
+| **XGBoost** | **0.774** | 0.817 | 0.660 | 0.359 |
+| Logistic Regression (baseline) | 0.708 | 0.808 | - | - |
+
+ROC-AUC is the headline metric: the classes are imbalanced (about 22% defaults), so a model that always predicts "no default" already scores about 77.9% accuracy, and the XGBoost accuracy of 81.7% is only modestly above that. Recall on defaults is low (0.359) at the default 0.5 threshold.
 
 ## Local Setup
 

@@ -10,7 +10,7 @@ import uuid
 
 from src.api.schemas import PredictionRequest, PredictionResponse, HealthCheck
 from src.utils.config import settings
-from src.explainability.shap_utils import get_feature_names
+import xgboost as xgb
 
 # Logging setup
 logging.basicConfig(level=logging.INFO)
@@ -71,31 +71,20 @@ def predict(request: PredictionRequest):
         prob = pipeline.predict_proba(input_df)[:, 1][0]
         label = int(pipeline.predict(input_df)[0])
         
-        # Calculate SHAP values (simplified for performance)
-        # For true real-time SHAP, we might need a faster method or precomputed explainer
-        # Here we extract model and preprocessor to compute
+        # Per-feature contributions via XGBoost's native TreeSHAP (pred_contribs=True).
+        # Values are in log-odds space; the last column is the bias term and is dropped.
         try:
             model = pipeline.named_steps['classifier']
             preprocessor = pipeline.named_steps['preprocessor']
             transformed_data = preprocessor.transform(input_df)
-            
-            # Note: Creating TreeExplainer every time is slow. In prod, cache it.
-            # But XGBoost native predict often supports contribs
-             # If using XGBoost sklearn API:
-            if hasattr(model, "get_booster"):
-                 booster = model.get_booster()
-                 # Feature names logic is complex with sklearn pipelines
-                 # We'll just provide raw contributions mapped to feature names if possible
-                 # Or skip full SHAP for simplicity in this demo if it's too slow
-                 # Let's try a robust way:
-                 pass
-            
-            # Simple top features mock logic if full SHAP is too heavy for T2.micro
-            # Ideally: explainer = shap.TreeExplainer(model); shap_values = explainer.shap_values(transformed_data)
-            # We will return empty for now to avoid overhead crashes on free tier, or make it optional.
-            shap_dict = {} 
-            top_feats = []
-
+            feature_names = list(preprocessor.get_feature_names_out())
+            contribs = model.get_booster().predict(
+                xgb.DMatrix(transformed_data, feature_names=feature_names),
+                pred_contribs=True,
+            )[0][:-1]
+            order = np.argsort(-np.abs(contribs))[:5]
+            shap_dict = {feature_names[k]: float(contribs[k]) for k in order}
+            top_feats = list(shap_dict.keys())
         except Exception as e:
             logger.warning(f"Feature explanation failed: {e}")
             shap_dict = {}

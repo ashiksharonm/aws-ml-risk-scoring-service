@@ -90,6 +90,10 @@ def load_data() -> pd.DataFrame:
         # Lowercase any remaining
         df.columns = [c.lower() for c in df.columns]
 
+        # The raw UCI data names the first repayment column pay_0
+        if 'pay_0' in df.columns:
+            df = df.rename(columns={'pay_0': 'pay_1'})
+
         # Handle legacy names just in case
         if 'default payment next month' in df.columns:
             df = df.rename(columns={'default payment next month': 'target'})
