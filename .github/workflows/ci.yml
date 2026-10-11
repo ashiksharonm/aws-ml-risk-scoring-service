@@ -31,10 +31,7 @@ jobs:
         
     - name: Test with Pytest
       run: |
-        # We need to make sure data is present or mocked.
-        # Ideally, use dvc pull or mock data for unit tests.
-        # For this simple project, we'll skip data-dependent tests if data missing, or use a small mock.
-        pytest tests/ || echo "Tests passed with warnings"
+        PYTHONPATH=. pytest tests/
 
   build-docker:
     runs-on: ubuntu-latest
