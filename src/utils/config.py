@@ -1,23 +1,33 @@
-import os
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "AWS ML Risk Scoring Service"
-    VERSION: str = "1.0.0"
-    
-    # Model Paths
+    """Runtime configuration, overridable through environment variables or .env."""
+
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    PROJECT_NAME: str = "Risk Scoring Service"
+    VERSION: str = "2.0.0"
+    LOG_LEVEL: str = "INFO"
+
+    # Model artifacts (written by `make train`)
     MODEL_PATH: str = "models/model.pkl"
-    PREPROCESSOR_PATH: str = "models/preprocessor.pkl"
-    
-    # Data Paths
-    # DATA_PATH DEPRECATED: We use ucimlrepo now. 
-    # But we keep processed dir.
+    CHALLENGER_PATH: str = "models/challenger.pkl"
+    REFERENCE_PATH: str = "models/reference.json"
+    MODEL_CARD_PATH: str = "models/model_card.json"
     PROCESSED_DATA_DIR: str = "data/processed"
-    
-    # AWS Config (loaded from env)
+
+    # Decisioning
+    DECISION_THRESHOLD: float = 0.5
+    REASON_CODE_COUNT: int = 4
+
+    # Monitoring
+    SHADOW_LOG_PATH: str = "logs/shadow_scores.jsonl"
+    LIVE_BUFFER_SIZE: int = 1000
+    MIN_DRIFT_ROWS: int = 100
+
+    # AWS (only used by the optional Lambda/EC2 deploy path)
     AWS_REGION: str = "us-east-1"
-    
-    class Config:
-        env_file = ".env"
+
 
 settings = Settings()

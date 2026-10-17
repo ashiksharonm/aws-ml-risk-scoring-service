@@ -44,3 +44,9 @@ risk-scoring-service.zip
 
 # AWS SAM
 .aws-sam/
+.coverage
+logs/
+coverage.xml
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
