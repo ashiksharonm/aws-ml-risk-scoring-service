@@ -1,0 +1,4 @@
+{"limit_bal": 20000, "sex": 2, "education": 2, "marriage": 1, "age": 35,
+ "pay_1": 2, "pay_2": 2, "pay_3": 2, "pay_4": 0, "pay_5": 0, "pay_6": 0,
+ "bill_amt1": 18000, "bill_amt2": 17500, "bill_amt3": 17000, "bill_amt4": 16000, "bill_amt5": 15000, "bill_amt6": 14000,
+ "pay_amt1": 0, "pay_amt2": 1000, "pay_amt3": 0, "pay_amt4": 500, "pay_amt5": 500, "pay_amt6": 500}

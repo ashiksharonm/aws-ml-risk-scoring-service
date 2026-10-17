@@ -1,34 +1,16 @@
-version: '3.8'
-
+# Local run (free default): `docker compose up --build` -> http://localhost:8000
 services:
-  ml-api:
-    image: ml-api
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    container_name: ml-api
-    restart: unless-stopped
-    expose:
-      - "8000"
-    environment:
-      - WORKERS=1
-
-  caddy:
-    image: caddy:2
-    container_name: caddy
-    restart: unless-stopped
+  api:
+    build: .
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - ml-api
+      - "8000:8000"
     environment:
-      - DOMAIN_NAME
+      PORT: "8000"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DECISION_THRESHOLD: ${DECISION_THRESHOLD:-0.5}
+    volumes:
+      - shadow-logs:/app/logs
+    restart: unless-stopped
 
 volumes:
-  caddy_data:
-  caddy_config:
+  shadow-logs:

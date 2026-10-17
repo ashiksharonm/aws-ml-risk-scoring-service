@@ -1,0 +1,13 @@
+.git
+.github
+data
+models
+reports
+logs
+tests
+docs
+infra
+**/__pycache__
+.venv
+.env
+*.zip
