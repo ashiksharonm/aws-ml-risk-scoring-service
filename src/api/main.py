@@ -11,6 +11,7 @@ from typing import Any, Dict
 import joblib
 import pandas as pd
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
 from mangum import Mangum
 
 from src.api.schemas import (
@@ -90,6 +91,31 @@ async def request_context(request: Request, call_next):
         request_id_var.reset(token)
     response.headers["X-Request-ID"] = rid
     return response
+
+
+_DEMO_PAGE = """<!doctype html><meta charset=utf-8><title>Risk Scoring Demo</title>
+<style>body{font:15px system-ui;max-width:760px;margin:2rem auto;padding:0 1rem}
+pre{background:#f4f4f4;padding:1rem;overflow:auto}button{margin-right:.5rem;padding:.5rem 1rem}</style>
+<h1>Credit-default scoring</h1>
+<p>Scores a sample applicant. Declined applicants get SHAP-based adverse-action reason codes.
+Full API: <a href=/docs>/docs</a>. Model card: <a href=/model-card>/model-card</a>.</p>
+<button onclick="run(HIGH)">Score high-risk applicant</button>
+<button onclick="run(LOW)">Score low-risk applicant</button><pre id=out>(click a button)</pre>
+<script>
+const HIGH={limit_bal:20000,sex:2,education:2,marriage:1,age:35,pay_1:2,pay_2:2,pay_3:2,pay_4:0,pay_5:0,pay_6:0,
+bill_amt1:18000,bill_amt2:17500,bill_amt3:17000,bill_amt4:16000,bill_amt5:15000,bill_amt6:14000,
+pay_amt1:0,pay_amt2:1000,pay_amt3:0,pay_amt4:500,pay_amt5:500,pay_amt6:500};
+const LOW={limit_bal:300000,sex:1,education:1,marriage:2,age:42,pay_1:-1,pay_2:-1,pay_3:-1,pay_4:-1,pay_5:-1,pay_6:-1,
+bill_amt1:5000,bill_amt2:4000,bill_amt3:6000,bill_amt4:3000,bill_amt5:5000,bill_amt6:4500,
+pay_amt1:5000,pay_amt2:4000,pay_amt3:6000,pay_amt4:3000,pay_amt5:5000,pay_amt6:4500};
+async function run(b){const r=await fetch('/predict',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)});
+document.getElementById('out').textContent=JSON.stringify(await r.json(),null,2)}
+</script>"""
+
+
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+def demo_page() -> str:
+    return _DEMO_PAGE
 
 
 @app.get("/healthz", response_model=HealthCheck)

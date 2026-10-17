@@ -140,3 +140,8 @@ def test_live_drift_and_model_card(served, synthetic):
     assert client.get("/model-card").status_code == 404
     api_main.models["model_card"] = {"model": "x"}
     assert client.get("/model-card").json() == {"model": "x"}
+
+
+def test_demo_page_served():
+    resp = client.get("/")
+    assert resp.status_code == 200 and "/predict" in resp.text
