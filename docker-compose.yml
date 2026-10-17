@@ -1,0 +1,16 @@
+# Local run (free default): `docker compose up --build` -> http://localhost:8000
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DECISION_THRESHOLD: ${DECISION_THRESHOLD:-0.5}
+    volumes:
+      - shadow-logs:/app/logs
+    restart: unless-stopped
+
+volumes:
+  shadow-logs:

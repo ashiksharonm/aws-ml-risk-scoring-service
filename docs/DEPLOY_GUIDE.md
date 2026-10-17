@@ -1,4 +1,6 @@
-# AWS Free Tier Deployment Guide
+# AWS Deployment Guide (optional path)
+
+> The default, free way to run this service is Docker locally or a Hugging Face Space (see the README). AWS is documented here for completeness; free-tier limits expire, so check current pricing first.
 
 This guide will help you deploy the **AWS ML Risk Scoring Service** to an AWS EC2 instance completely within the **Free Tier** limits.
 
@@ -36,8 +38,9 @@ This guide will help you deploy the **AWS ML Risk Scoring Service** to an AWS EC
     chmod 400 path/to/aws-ml-key.pem
 
     # Copy files excluding heavy/unnecessary ones
-    # Note: We need the 'models', 'src', 'docker', 'requirements.txt', plus config files
-    scp -i path/to/aws-ml-key.pem -r src models docker requirements.txt docker-compose.yml Caddyfile ec2-user@<PUBLIC-IP>:/home/ec2-user/
+    # Note: the image trains its own model at build time, so no local 'models' dir is needed.
+    # The EC2 compose file is docker-compose.aws.yml (the default docker-compose.yml is the local one).
+    scp -i path/to/aws-ml-key.pem -r src scripts examples Dockerfile requirements.txt docker-compose.aws.yml Caddyfile ec2-user@<PUBLIC-IP>:/home/ec2-user/
     ```
 
     *Alternatively, if you pushed to GitHub, you can SSH in and `git clone`.*
@@ -72,7 +75,7 @@ This guide will help you deploy the **AWS ML Risk Scoring Service** to an AWS EC
     docker build -t ml-api -f docker/Dockerfile .
 
     # 2. Start services using that image
-    docker-compose up -d --no-build
+    docker-compose -f docker-compose.aws.yml up -d --no-build
     ```
 
 3.  **View Logs** (Optional):

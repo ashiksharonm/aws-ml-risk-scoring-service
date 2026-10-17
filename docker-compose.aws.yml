@@ -1,17 +1,15 @@
-version: '3.8'
-
+# EC2 deploy path (optional, AWS): HTTPS via Caddy in front of the API.
 services:
   ml-api:
-    image: ml-api
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
     container_name: ml-api
     restart: unless-stopped
     expose:
       - "8000"
     environment:
-      - WORKERS=1
+      - PORT=8000
 
   caddy:
     image: caddy:2
